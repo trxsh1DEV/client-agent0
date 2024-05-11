@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Obter Localização Atual</title>
+  </head>
+  <body>
+    <h1>Obter Localização Atual</h1>
+
+    <p>Latitude: <span id="latitude"></span></p>
+    <p>Longitude: <span id="longitude"></span></p>
+
+    <button onclick="abrirGoogleMaps()">Abrir no Google Maps</button>
+
+    <script>
+      function obterLocalizacao() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function (position) {
+            var latitude = position.coords.latitude;
+            var longitude = position.coords.longitude;
+            document.getElementById("latitude").textContent = latitude;
+            document.getElementById("longitude").textContent = longitude;
+          });
+        } else {
+          alert("Geolocalização não é suportada pelo seu navegador.");
+        }
+      }
+
+      function abrirGoogleMaps() {
+        var latitude = document.getElementById("latitude").textContent;
+        var longitude = document.getElementById("longitude").textContent;
+        var url =
+          "https://www.google.com/maps/search/?api=1&query=" +
+          latitude +
+          "," +
+          longitude;
+        window.open(url, "_blank");
+      }
+
+      // Chama a função para obter a localização atual quando a página carrega
+      obterLocalizacao();
+    </script>
+  </body>
+</html>
