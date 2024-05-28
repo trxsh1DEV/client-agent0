@@ -10,12 +10,28 @@ from hashlib import md5
 from uuid import uuid4
 import tempfile
 import wmi
+import geocoder
 
 
 def get_workstation_domain_wmi():
     c = wmi.WMI()
     for computer in c.Win32_ComputerSystem():
         return computer.Domain
+    
+def get_location():
+    try:
+        # Obtém a localização atual usando a API de geolocalização do provedor padrão
+        localizacao = geocoder.ip('me')
+
+        if localizacao.ok:
+            latitude, longitude = localizacao.latlng
+            return {"latitude": latitude, "longitude": longitude}
+        else:
+            print("Não foi possível obter a localização atual.")
+            return None
+    except Exception as e:
+        print("Ocorreu um erro ao obter a localização:", e)
+        return None
 
 def get_hwid():
     # Obtém informações do hardware que podem ser usadas para gerar o HWID
@@ -83,24 +99,38 @@ def get_device_info():
     return device_info
     
 def run_client():
-    server_ip = "192.168.0.2"
-    server_port = 8080  # Porta do servidor socket
-    
-    try:
-        # Criação do socket 
-        client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        # Conexão com o servidor
-        client.connect((server_ip, server_port))
-        
-        hwid = get_hwid()        
-        uid = read_from_registry() or write_to_regedit(str(uuid4()))
-        start_collect(client, {"hwid": hwid, "uid": uid})
+    server_ip = "192.168.0.2"  # Endereço IP do cliente
+    server_port = 8080  # Porta para o servidor socket
 
-        print("Connected to server")
+    # Conexão com o servidor
+    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    client.connect((server_ip, server_port))
+    server_port = client.getsockname()[1]
 
-        while True:
-            # receive message from the server
+    hwid = get_hwid()        
+    uid = read_from_registry() or write_to_regedit(str(uuid4()))
+    start_collect(client, {"hwid": hwid, "uid": uid})    
+
+    print("send")
+    client.close()
+
+    while True:
+        try:
+            server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            server.bind((server_ip, server_port))
+            server.listen(1)
+
+            print("Server is waiting for connection...")
+
+            # Aguarda até que uma conexão seja aceita
+            client, client_address = server.accept()
+            print(f"Connected to client: {client_address}")
+
+            print("Connected to server")
+                # Recebe mensagem do servidor
             command = client.recv(1024).decode()
+            print("command", command)
+            
             # Executa o comando recebido do servidor
             if command.strip().lower() == "shutdown_now":
                 print("Recebido comando de desligamento. Desligando a máquina...")
@@ -110,13 +140,11 @@ def run_client():
                 start_collect(client, {"hwid": hwid, "uid": uid})
             elif command.strip().lower() == "quit":
                 print("saindo...")
-                break
+                break  # Sai do loop e encerra a conexão com o servidor
             elif command.strip().lower() == "winget_install":
-                subprocess.run("powershell -command \"iex ((New-Object System.Net.WebClient).DownloadString('https://aka.ms/install-winget'))")
-                break
+                subprocess.run("powershell -command \"iex ((New-Object System.Net.WebClient).DownloadString('https://aka.ms/install-winget'))\"")
             elif command.strip().lower() == "remove_agent":
-                print(command)
-                #wmic product where "name='Exemplo'" call uninstall
+                # wmic product where "name='Exemplo'" call uninstall
                 subprocess.Popen(["wmic product where name='nameApp' call uninstall"])
             else:
                 timeout = command.split("##")[1] if len(command.split("##")) > 1 else 30
@@ -127,30 +155,28 @@ def run_client():
                         temp_file.write(command)
                         command = temp_file.name
 
-                print("timeout", timeout)
-                print("command", command)
-
                 encoding = "cp850" if platform.system() == "Windows" else "utf_8"
                 try:
                     process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, shell=True, encoding=encoding)
                     # Aguarde até que o processo seja concluído
                     stdout, stderr = process.communicate(timeout=int(timeout))
                     if stdout:
-                        print(stdout)
+                        # print(stdout)
                         client.sendall(stdout.encode())
                     if stderr:
+                        client.sendall(stderr.encode())
                         print("Erro ao executar o comando:", stderr)
                 except subprocess.TimeoutExpired:
                     print("Tempo limite excedido ao executar o comando.")
                 except Exception as e:
                     print("Erro ao executar o comando:", e)
 
-    except Exception as e:
-        print(f"Erro: {e}")
-    finally:
-        # close client socket (connection to the server)
-        client.close()
-        print("Connection to server closed")
+        except Exception as e:
+            print(f"Erro: {e}")
+        finally:
+            # Fecha a conexão com o cliente
+            client.close()
+            print("Connection to client closed")
 
 def write_to_regedit(data):
     try:
@@ -301,12 +327,9 @@ def get_so_info():
         "so": get_version_system(),
         "version": platform.version(),
         "architecture": platform.machine(),
-        "manufacturer": get_motherboard()["manufacturer"],
         "type_machine": categorie_system(),
         "hostname": platform.uname().node,
         "domain": get_workstation_domain_wmi(),
-        "motherboard": get_motherboard()["motherboard"],
-        "model": get_motherboard()["model"],
         "user_logged": psutil.users()[0].name,
         "last_update": datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
     }
@@ -328,14 +351,16 @@ def start_collect(client, identifiers):
             "system": get_so_info(),
             "storage": get_disco_info(),
             "software": get_installed_software(),
-            "network": get_network(client.getsockname()[0])
+            "motherboard": get_motherboard(),
+            "network": get_network(client.getsockname()[0]),
         },
+        "location": get_location(),
         "periphericals": get_device_info(),
         "hwid": identifiers["hwid"],
         "uid": identifiers["uid"]
     }
 
-    print(data)
-    # client.sendall(json.dumps(data).encode())
+    # print(data)
+    client.sendall(json.dumps(data).encode())
 
 run_client()

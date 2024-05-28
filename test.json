@@ -1,0 +1,120 @@
+{
+  "inventory": {
+    "cpu": {
+      "model": "Intel(R) Core(TM) i7-4770K CPU @ 3.50GHz",
+      "architecture": "64bit",
+      "cpu_freq": 3300.0,
+      "physical_cores": 4,
+      "logic_cores": 8
+    },
+    "memory": {
+      "total": 15.96,
+      "available": 5.02,
+      "used": 10.94,
+      "percentage": 68.6
+    },
+    "system": {
+      "so": "Windows 10 Pro x64",
+      "version": "10.0.22621",
+      "architecture": "AMD64",
+      "type_machine": "Desktop",
+      "hostname": "PC-trxshy",
+      "domain": "WORKGROUP",
+      "user_logged": "trxshy",
+      "last_update": "13/05/2024 16:12:36"
+    },
+    "storage": {
+      "total": 144.33,
+      "used": 108.03,
+      "available": 36.3,
+      "percentage": 74.8
+    },
+    "software": [
+      "AMD Software",
+      "CPUID CPU-Z 2.05",
+      "CPUID HWMonitor 1.50",
+      "Git",
+      "ONLYOFFICE Desktop Editors 7.3 (x64)",
+      "Speccy",
+      "Tomb Raider",
+      "Cuphead",
+      "Hollow Knight",
+      "Pixel Strike 3D",
+      "MiniTool Partition Wizard Free 12.8",
+      "Microsoft Visual C++ 2022 X64 Minimum Runtime - 14.34.31938",
+      "Python 3.11.4 Development Libraries (64-bit)",
+      "Microsoft Visual C++ 2010  x64 Redistributable - 10.0.40219",
+      "FortiClient VPN",
+      "Microsoft Visual C++ 2012 x64 Additional Runtime - 11.0.61030",
+      "Java(TM) SE Development Kit 21.0.2 (64-bit)",
+      "Branding64",
+      "PuTTY release 0.78 (64-bit)",
+      "Python 3.11.4 Test Suite (64-bit)",
+      "AMD Settings",
+      "Microsoft Visual C++ 2008 Redistributable - x64 9.0.30729.6161",
+      "AMD WVR64",
+      "Microsoft Visual Studio Installer",
+      "Python 3.11.4 Add to Path (64-bit)",
+      "Microsoft Visual C++ 2022 X64 Additional Runtime - 14.34.31938",
+      "Python 3.11.4 Standard Library (64-bit)",
+      "Python 3.11.4 Utility Scripts (64-bit)",
+      "Microsoft Visual C++ 2013 x64 Additional Runtime - 12.0.21005",
+      "Nefarius Virtual Gamepad Emulation Bus Driver",
+      "OpenVPN 2.6.5-I001 amd64",
+      "Python 3.11.4 Tcl/Tk Support (64-bit)",
+      "Microsoft Visual C++ 2013 x64 Minimum Runtime - 12.0.21005",
+      "spacedesk Windows DRIVER",
+      "EA app",
+      "Microsoft Update Health Tools",
+      "AMD DVR64",
+      "Microsoft Visual C++ 2012 x64 Minimum Runtime - 11.0.61030",
+      "Python 3.11.4 pip Bootstrap (64-bit)",
+      "Python 3.11.4 Executables (64-bit)",
+      "Flameshot",
+      "Node.js",
+      "MySQL Workbench 8.0 CE",
+      "Epic Games Launcher Prerequisites (x64)",
+      "Python 3.11.4 Documentation (64-bit)",
+      "Python 3.11.4 Core Interpreter (64-bit)"
+    ],
+    "motherboard": {
+      "motherboard": "MACHINIST",
+      "model": "H81M-PRO S1",
+      "manufacturer": "Default string"
+    },
+    "network": {
+      "network": "Trash 5G\n",
+      "ipv4": "192.168.0.2",
+      "mac": "00-15-5D-1D-E3-59"
+    }
+  },
+  "location": { "latitude": -23.6039, "longitude": -46.9192 },
+  "periphericals": {
+    "keyboard": {
+      "name": "Enhanced (101- or 102-key)",
+      "description": "USB Input Device",
+      "device_id": "6&31CAF431&0&0000"
+    },
+    "mouse": {
+      "name": "HID-compliant mouse",
+      "description": "HID-compliant mouse",
+      "device_id": "7&27180AF8&0&0000"
+    },
+    "monitors": [
+      {
+        "edid": "WAM2700",
+        "resolution": "1920 x 1080 - 165 Hertz",
+        "gpu": "AMD Radeon RX 6600",
+        "gpu_id": "6&A34F472&0&00000008"
+      },
+      {
+        "edid": "VIE0023",
+        "resolution": "1920 x 1080 - 165 Hertz",
+        "gpu": "AMD Radeon RX 6600",
+        "gpu_id": "6&A34F472&0&00000008"
+      }
+    ]
+  },
+  "hwid": "ce7ae79bd212983f6b6b78c8861772ac",
+  "uid": "29841b3c-f739-4e36-b8f9-2b2d43561bdb"
+}
